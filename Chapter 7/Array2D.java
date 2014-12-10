@@ -11,7 +11,6 @@ public class Array2D
     
     public Array2D()
     {
-        
     }
     
     public String toString()
@@ -31,7 +30,7 @@ public class Array2D
     public String getRow(int row)
     {
         String str = "";
-        for(int col = 0; col < table[0].length; col++)
+        for(int col = 0; col < table[row].length; col++)
         {
             str += table[row][col] + "\t";
         }
