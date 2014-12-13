@@ -39,6 +39,7 @@ public class Radar
     {
         // initialize instance variables
         currentScan = new boolean[rows][cols]; // elements will be set to false
+        lastScan = new boolean[rows][cols];
         accumulator = new int[rows][cols]; // elements will be set to 0
 
         // randomly set the location of the monster (can be explicity set through the
@@ -60,11 +61,14 @@ public class Radar
     public void scan()
     {
         // copy current scan into previous scan
-        for(int row = 0; row < currentScan.length; row++)
+        if(numScans != 0)
         {
-            for(int col = 0; col < currentScan[0].length; col++)
+            for(int row = 0; row < currentScan.length; row++)
             {
-                lastScan[row][col] = currentScan[row][col];
+                for(int col = 0; col < currentScan[0].length; col++)
+                {
+                    lastScan[row][col] = currentScan[row][col];
+                }
             }
         }
         // zero the current scan grid
@@ -88,46 +92,59 @@ public class Radar
         }
         // inject noise into the grid
         injectNoise();
-
         // udpate the accumulator
-        for(int row = 0; row < currentScan.length; row++)
+        if(numScans != 0)
         {
-            for(int col = 0; col < currentScan[0].length; col++)
+            for(int row = 0; row < currentScan.length; row++)
             {
-                for(int row2 = 0; row2 < lastScan.length; row2++)
+                for(int col = 0; col < currentScan[0].length; col++)
                 {
-                    for(int col2 = 0; col2 < lastScan[0].length; col++)
+                    if(currentScan[row][col] == true)
                     {
-                        if((currentScan[row][col] == true) && (lastScan[row2][col2] == true))
+                        for(int row2 = 0; row2 < lastScan.length; row2++)
                         {
-                            int dx = currentScan[col] - lastScan[col];
-                            int dy = currentScan[row] - lastScan[row];
-                            if((dx < 6) && (dy < 6) && (dx > -6) && (dy > -6))
+                            for(int col2 = 0; col2 < lastScan[0].length; col++)
                             {
-                                accumulator[dx + 5][dy + 5];
+                                if(lastScan[row2][col2] == true)
+                                {
+                                    int dx = col - col2;
+                                    int dy = row - row2;
+                                    if((dx < 6) && (dy < 6) && (dx > -6) && (dy > -6))
+                                    {
+                                        accumulator[dx + 5][dy + 5]++;
+                                    }
+                                    System.out.println("yes");
+                                }
+                                else
+                                {
+                                    System.out.println("no");
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-        
-        int greatestCount = accumulator[0][0];
-        int velocityXX = 0;
-        int velocityYY = 0;
-        
-        for(int row = 0; row < accumulator.length; row++)
-        {
-            for(int col = 0; col < accumulator[0].length; col++)
+            System.out.println("done333");
+            if(numScans == 100)
             {
-                if(accumulator[row][col] > greatestCount)
+                int greatestCount = accumulator[0][0];
+                int velocityXX = 0;
+                int velocityYY = 0;
+
+                for(int row = 0; row < accumulator.length; row++)
                 {
-                    velocityXX = col - 5;
-                    velocityYY = row - 5;
+                    for(int col = 0; col < accumulator[0].length; col++)
+                    {
+                        if(accumulator[row][col] > greatestCount)
+                        {
+                            velocityXX = col - 5;
+                            velocityYY = row - 5;
+                        }
+                    }
                 }
+                System.out.println("The Monster's velocity is: " + velocityXX + ", " + velocityYY);
             }
         }
-        System.out.println("The Monster's velocity is: " + velocityXX + ", " + velocityYY);
         // keep track of the total number of scans
         numScans++;
     }
