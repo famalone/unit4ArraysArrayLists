@@ -7,7 +7,7 @@
  */
 public class Radar
 {
-
+    private String velocityGuess;
     // stores whether each cell triggered detection for the current scan of the radar
     private boolean[][] lastScan;
     private boolean[][] currentScan;
@@ -103,7 +103,7 @@ public class Radar
                     {
                         for(int row2 = 0; row2 < lastScan.length; row2++)
                         {
-                            for(int col2 = 0; col2 < lastScan[0].length; col++)
+                            for(int col2 = 0; col2 < lastScan[0].length; col2++)
                             {
                                 if(lastScan[row2][col2] == true)
                                 {
@@ -113,19 +113,14 @@ public class Radar
                                     {
                                         accumulator[dx + 5][dy + 5]++;
                                     }
-                                    System.out.println("yes");
-                                }
-                                else
-                                {
-                                    System.out.println("no");
                                 }
                             }
                         }
                     }
                 }
             }
-            System.out.println("done333");
-            if(numScans == 100)
+            
+            if(isOffGrid())
             {
                 int greatestCount = accumulator[0][0];
                 int velocityXX = 0;
@@ -137,12 +132,13 @@ public class Radar
                     {
                         if(accumulator[row][col] > greatestCount)
                         {
-                            velocityXX = col - 5;
-                            velocityYY = row - 5;
+                            velocityXX = row - 5;
+                            velocityYY = col - 5;
+                            greatestCount = accumulator[row][col];
                         }
                     }
                 }
-                System.out.println("The Monster's velocity is: " + velocityXX + ", " + velocityYY);
+                velocityGuess = "The Monster's velocity is: " + velocityXX + ", " + velocityYY;
             }
         }
         // keep track of the total number of scans
@@ -164,6 +160,18 @@ public class Radar
 
         // update the radar grid to show that something was detected at the specified location
         currentScan[row][col] = true;
+    }
+    
+    public boolean isOffGrid()
+    {
+        if((monsterLocationRow > 100) || (monsterLocationCol > 100))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     /**
@@ -231,6 +239,11 @@ public class Radar
     public int getNumScans()
     {
         return numScans;
+    }
+    
+    public String getVelocity()
+    {
+        return velocityGuess;
     }
 
     /**
