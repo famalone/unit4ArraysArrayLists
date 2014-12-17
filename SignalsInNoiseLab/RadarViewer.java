@@ -9,7 +9,8 @@ import javax.swing.JFrame;
 public class RadarViewer
 {
     /**
-     * main method for the program which creates and configures the frame for the program
+     * main method for the program which creates and configures the frame for the program and
+     * prints the velocity of the monster.
      *
      */
     public static void main(String[] args) throws InterruptedException
@@ -49,6 +50,8 @@ public class RadarViewer
             
             frame.repaint();
         }
+        String velocity = radar.getVelocity();
+        System.out.println(velocity);
     }
 
 }

@@ -34,6 +34,8 @@ public class Radar
      * 
      * @param   rows    the number of rows in the radar grid
      * @param   cols    the number of columns in the radar grid
+     * @param   dx      the change in x for each scan
+     * @param   dy      the change in y for each scan
      */
     public Radar(int rows, int cols, int dx, int dy)
     {
@@ -55,8 +57,10 @@ public class Radar
     }
 
     /**
-     * Performs a scan of the radar. Noise is injected into the grid and the accumulator is updated.
-     * 
+     * Performs a scan of the radar. Noise is injected into the grid and the accumulator is updated
+     * based on a comparison of the previous scan and the current scan. When the monster goes off the
+     * grid the change in x and change in y is determined based on the largest accumulated pair of dx
+     * and dy. velocityGuess is then updated.
      */
     public void scan()
     {
@@ -162,6 +166,12 @@ public class Radar
         currentScan[row][col] = true;
     }
     
+    /**
+     * Determines if the monster has gone off the grid and returns a boolean value (true if off,
+     * false if on).
+     * 
+     * @return true if the monster is off the grid, false if the monster is still on the grid.
+     */
     public boolean isOffGrid()
     {
         if((monsterLocationRow > 100) || (monsterLocationCol > 100))
@@ -241,6 +251,11 @@ public class Radar
         return numScans;
     }
     
+    /**
+     * Returns the constant velocity of the monster noise.
+     * 
+     * @return the constant velocity of the monster noise.
+     */
     public String getVelocity()
     {
         return velocityGuess;
